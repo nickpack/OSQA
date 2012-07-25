@@ -49,4 +49,10 @@ label = _("Contact URL"),
 help_text = _("The URL provided for users to contact you. It can be http: or mailto: or whatever your preferred contact scheme is."),
 required=False))
 
+AUTHENTICATION_REQUIRED = Setting('AUTHENTICATION_REQUIRED', False, BASIC_SET, dict(
+    label = _("Require authentication to view"),
+    help_text = _("Force all users to log in before showing anything."),
+    required=False
+))
+
 

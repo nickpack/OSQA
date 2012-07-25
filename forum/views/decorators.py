@@ -12,7 +12,7 @@ from django.template import RequestContext
 from django.utils.translation import ugettext as _
 
 from forum.modules import ui, decorate
-from forum.settings import ONLINE_USERS
+from forum.settings import ONLINE_USERS, AUTHENTICATION_REQUIRED
 
 def login_required(func, request, *args, **kwargs):
     if not request.user.is_authenticated():
@@ -25,6 +25,9 @@ def render(template=None, tab=None, tab_title='', weight=500, tabbed=True):
         def decorated(context, request, *args, **kwargs):
             if request.user.is_authenticated():
                 ONLINE_USERS[request.user] = datetime.now()
+
+            if AUTHENTICATION_REQUIRED and not request.user.is_authenticated():
+                return HttpResponseRedirect(reverse('auth_signin'))
 
             if isinstance(context, HttpResponse):
                 return context
@@ -74,7 +77,7 @@ def command(func, request, *args, **kwargs):
             logging.error(traceback.format_exc())
             response = {
             'success': False,
-            'error_message': _("We're sorry, but an unknown error ocurred.<br />Please try again in a while.")
+            'error_message': _("We're sorry, but an unknown error occurred.<br />Please try again in a while.")
             }
 
     if request.is_ajax():
